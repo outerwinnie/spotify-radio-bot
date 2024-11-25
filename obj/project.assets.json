@@ -2,22 +2,6 @@
   "version": 3,
   "targets": {
     "net9.0": {
-      "Caerostris.Services.Spotify.Web.SpotifyAPI.Web/1.0.0": {
-        "type": "package",
-        "dependencies": {
-          "Newtonsoft.Json": "12.0.3"
-        },
-        "compile": {
-          "lib/netstandard2.0/SpotifyAPI.Web.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/netstandard2.0/SpotifyAPI.Web.dll": {
-            "related": ".xml"
-          }
-        }
-      },
       "Discord.Net/3.16.0": {
         "type": "package",
         "dependencies": {
@@ -336,19 +320,6 @@
     }
   },
   "libraries": {
-    "Caerostris.Services.Spotify.Web.SpotifyAPI.Web/1.0.0": {
-      "sha512": "wwZTxB7vS0s4glqMxytcW/AGfkG38R7HHS5+tDQiYfvYFrCr6Uw7J3FMiz5MvElZA26XCJzN4R7bGgF9vLPh4g==",
-      "type": "package",
-      "path": "caerostris.services.spotify.web.spotifyapi.web/1.0.0",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "caerostris.services.spotify.web.spotifyapi.web.1.0.0.nupkg.sha512",
-        "caerostris.services.spotify.web.spotifyapi.web.nuspec",
-        "lib/netstandard2.0/SpotifyAPI.Web.dll",
-        "lib/netstandard2.0/SpotifyAPI.Web.xml"
-      ]
-    },
     "Discord.Net/3.16.0": {
       "sha512": "6pbwXpFJFhmIpWSzgRh2M5KxC+dwxWfQxexLZyMi4qVMWEYRIb4XpPW10PYBdXe2Q6K1ld3cjakg+zMNZIMgzQ==",
       "type": "package",
@@ -820,7 +791,6 @@
   },
   "projectFileDependencyGroups": {
     "net9.0": [
-      "Caerostris.Services.Spotify.Web.SpotifyAPI.Web >= 1.0.0",
       "Discord.Net >= 3.16.0",
       "SpotifyAPI.Web >= 7.2.1",
       "SpotifyAPI.Web.Auth >= 7.2.1"
@@ -869,10 +839,6 @@
       "net9.0": {
         "targetAlias": "net9.0",
         "dependencies": {
-          "Caerostris.Services.Spotify.Web.SpotifyAPI.Web": {
-            "target": "Package",
-            "version": "[1.0.0, )"
-          },
           "Discord.Net": {
             "target": "Package",
             "version": "[3.16.0, )"

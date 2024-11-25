@@ -44,10 +44,6 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "dependencies": {
-            "Caerostris.Services.Spotify.Web.SpotifyAPI.Web": {
-              "target": "Package",
-              "version": "[1.0.0, )"
-            },
             "Discord.Net": {
               "target": "Package",
               "version": "[3.16.0, )"
