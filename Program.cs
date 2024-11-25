@@ -14,7 +14,7 @@ class Program
     private readonly string _spotifyClientSecret = Environment.GetEnvironmentVariable("SPOTIFY_CLIENT_SECRET") ?? throw new InvalidOperationException();
     private readonly string _spotifyPlaylistId = Environment.GetEnvironmentVariable("SPOTIFY_PLAYLIST_ID") ?? throw new InvalidOperationException();
     private readonly ulong _channelId = ulong.Parse(Environment.GetEnvironmentVariable("DISCORD_CHANNEL_ID") ?? "0");
-    private readonly int _playlistCap = int.Parse(Environment.GetEnvironmentVariable("SPOTIFY_PLAYLIST_CAP") ?? "25");
+    private readonly int _playlistCap = int.Parse(Environment.GetEnvironmentVariable("SPOTIFY_PLAYLIST_CAP") ?? "50");
 
     private SpotifyClient _spotifyClient;
 
@@ -28,7 +28,6 @@ class Program
         };
         _client = new DiscordSocketClient(config);
     }
-
 
     public async Task MainAsync()
     {
@@ -52,38 +51,34 @@ class Program
 
     private async Task MessageReceivedAsync(SocketMessage message)
     {
-        
-        // Log all messages for debugging
-        Console.WriteLine($"Message received: {message.Content}");
-        
         // Ensure the message is from the target channel
         if (message.Channel.Id != _channelId) return;
 
-        // Extract Spotify playlist link
-        string spotifyLink = DetectSpotifyPlaylistLink(message.Content);
+        // Extract Spotify track link
+        string spotifyLink = DetectSpotifyTrackLink(message.Content);
         if (spotifyLink != null)
         {
-            Console.WriteLine($"Spotify playlist link detected: {spotifyLink}");
-            string playlistId = ExtractPlaylistId(spotifyLink);
+            Console.WriteLine($"Spotify track link detected: {spotifyLink}");
+            string trackId = ExtractTrackId(spotifyLink);
 
             // Add to Spotify playlist
-            if (!string.IsNullOrEmpty(playlistId))
+            if (!string.IsNullOrEmpty(trackId))
             {
-                await AddToSpotifyPlaylistAsync(playlistId);
+                await AddTrackToSpotifyPlaylistAsync(trackId);
             }
         }
     }
 
-    private string DetectSpotifyPlaylistLink(string message)
+    private string DetectSpotifyTrackLink(string message)
     {
-        string pattern = @"https?:\/\/open\.spotify\.com\/playlist\/[a-zA-Z0-9]+";
+        string pattern = @"https?:\/\/open\.spotify\.com\/track\/[a-zA-Z0-9]+";
         Match match = Regex.Match(message, pattern);
         return match.Success ? match.Value : null;
     }
 
-    private string ExtractPlaylistId(string spotifyLink)
+    private string ExtractTrackId(string spotifyLink)
     {
-        string pattern = @"https?:\/\/open\.spotify\.com\/playlist\/([a-zA-Z0-9]+)";
+        string pattern = @"https?:\/\/open\.spotify\.com\/track\/([a-zA-Z0-9]+)";
         Match match = Regex.Match(spotifyLink, pattern);
         return match.Success ? match.Groups[1].Value : null;
     }
@@ -98,7 +93,7 @@ class Program
         Console.WriteLine("Spotify client initialized.");
     }
 
-    private async Task AddToSpotifyPlaylistAsync(string playlistId)
+    private async Task AddTrackToSpotifyPlaylistAsync(string trackId)
     {
         try
         {
@@ -113,8 +108,13 @@ class Program
                     currentTrackUris.Add(track.Uri);
             }
 
-            // Add new track to playlist
-            string newTrackUri = $"spotify:playlist:{playlistId}";
+            // Check if track is already in the playlist
+            string newTrackUri = $"spotify:track:{trackId}";
+            if (currentTrackUris.Contains(newTrackUri))
+            {
+                Console.WriteLine("Track is already in the playlist.");
+                return;
+            }
 
             // Check if we need to remove the oldest track
             if (currentTrackUris.Count >= _playlistCap)
