@@ -52,6 +52,10 @@ class Program
 
     private async Task MessageReceivedAsync(SocketMessage message)
     {
+        
+        // Log all messages for debugging
+        Console.WriteLine($"Message received: {message.Content}");
+        
         // Ensure the message is from the target channel
         if (message.Channel.Id != _channelId) return;
 
