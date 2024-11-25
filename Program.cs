@@ -1,10 +1,7 @@
-﻿using System;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
 using Discord;
 using Discord.WebSocket;
 using SpotifyAPI.Web;
-using System.Collections.Generic;
 
 class Program
 {

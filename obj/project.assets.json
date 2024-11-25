@@ -2,6 +2,22 @@
   "version": 3,
   "targets": {
     "net9.0": {
+      "Caerostris.Services.Spotify.Web.SpotifyAPI.Web/1.0.0": {
+        "type": "package",
+        "dependencies": {
+          "Newtonsoft.Json": "12.0.3"
+        },
+        "compile": {
+          "lib/netstandard2.0/SpotifyAPI.Web.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/SpotifyAPI.Web.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "Discord.Net/3.16.0": {
         "type": "package",
         "dependencies": {
@@ -118,6 +134,22 @@
           }
         }
       },
+      "EmbedIO/3.5.2": {
+        "type": "package",
+        "dependencies": {
+          "Unosquare.Swan.Lite": "3.1.0"
+        },
+        "compile": {
+          "lib/netstandard2.0/EmbedIO.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/EmbedIO.dll": {
+            "related": ".pdb;.xml"
+          }
+        }
+      },
       "Microsoft.Bcl.AsyncInterfaces/6.0.0": {
         "type": "package",
         "compile": {
@@ -172,6 +204,23 @@
         },
         "runtime": {
           "lib/net8.0/SpotifyAPI.Web.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "SpotifyAPI.Web.Auth/7.2.1": {
+        "type": "package",
+        "dependencies": {
+          "EmbedIO": "3.5.2",
+          "SpotifyAPI.Web": "7.2.1"
+        },
+        "compile": {
+          "lib/net8.0/SpotifyAPI.Web.Auth.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/SpotifyAPI.Web.Auth.dll": {
             "related": ".xml"
           }
         }
@@ -267,10 +316,39 @@
         "runtime": {
           "lib/netcoreapp2.0/_._": {}
         }
+      },
+      "Unosquare.Swan.Lite/3.1.0": {
+        "type": "package",
+        "dependencies": {
+          "System.ValueTuple": "4.5.0"
+        },
+        "compile": {
+          "lib/netstandard2.0/Swan.Lite.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/Swan.Lite.dll": {
+            "related": ".xml"
+          }
+        }
       }
     }
   },
   "libraries": {
+    "Caerostris.Services.Spotify.Web.SpotifyAPI.Web/1.0.0": {
+      "sha512": "wwZTxB7vS0s4glqMxytcW/AGfkG38R7HHS5+tDQiYfvYFrCr6Uw7J3FMiz5MvElZA26XCJzN4R7bGgF9vLPh4g==",
+      "type": "package",
+      "path": "caerostris.services.spotify.web.spotifyapi.web/1.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "caerostris.services.spotify.web.spotifyapi.web.1.0.0.nupkg.sha512",
+        "caerostris.services.spotify.web.spotifyapi.web.nuspec",
+        "lib/netstandard2.0/SpotifyAPI.Web.dll",
+        "lib/netstandard2.0/SpotifyAPI.Web.xml"
+      ]
+    },
     "Discord.Net/3.16.0": {
       "sha512": "6pbwXpFJFhmIpWSzgRh2M5KxC+dwxWfQxexLZyMi4qVMWEYRIb4XpPW10PYBdXe2Q6K1ld3cjakg+zMNZIMgzQ==",
       "type": "package",
@@ -420,6 +498,20 @@
         "lib/netstandard2.1/Discord.Net.WebSocket.xml"
       ]
     },
+    "EmbedIO/3.5.2": {
+      "sha512": "YU4j+3XvuO8/VPkNf7KWOF1TpMhnyVhXnPsG1mvnDhTJ9D5BZOFXVDvCpE/SkQ1AJ0Aa+dXOVSW3ntgmLL7aJg==",
+      "type": "package",
+      "path": "embedio/3.5.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "embedio.3.5.2.nupkg.sha512",
+        "embedio.nuspec",
+        "lib/netstandard2.0/EmbedIO.dll",
+        "lib/netstandard2.0/EmbedIO.pdb",
+        "lib/netstandard2.0/EmbedIO.xml"
+      ]
+    },
     "Microsoft.Bcl.AsyncInterfaces/6.0.0": {
       "sha512": "UcSjPsst+DfAdJGVDsu346FX0ci0ah+lw3WRtn18NUwEqRt70HaOQ7lI72vy3+1LxtqI3T5GWwV39rQSrCzAeg==",
       "type": "package",
@@ -517,6 +609,29 @@
         "lib/netstandard2.1/SpotifyAPI.Web.xml",
         "spotifyapi.web.7.2.1.nupkg.sha512",
         "spotifyapi.web.nuspec"
+      ]
+    },
+    "SpotifyAPI.Web.Auth/7.2.1": {
+      "sha512": "/U/KCV4iBsG3rHBCDL7THKkJcNdfP0Lqhq87afKeTjP7EQGM5haDy6rNblZlL/t9RnK9+DFhWCdAKVQagDB6bg==",
+      "type": "package",
+      "path": "spotifyapi.web.auth/7.2.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net5.0/SpotifyAPI.Web.Auth.dll",
+        "lib/net5.0/SpotifyAPI.Web.Auth.xml",
+        "lib/net6.0/SpotifyAPI.Web.Auth.dll",
+        "lib/net6.0/SpotifyAPI.Web.Auth.xml",
+        "lib/net7.0/SpotifyAPI.Web.Auth.dll",
+        "lib/net7.0/SpotifyAPI.Web.Auth.xml",
+        "lib/net8.0/SpotifyAPI.Web.Auth.dll",
+        "lib/net8.0/SpotifyAPI.Web.Auth.xml",
+        "lib/netstandard2.0/SpotifyAPI.Web.Auth.dll",
+        "lib/netstandard2.0/SpotifyAPI.Web.Auth.xml",
+        "lib/netstandard2.1/SpotifyAPI.Web.Auth.dll",
+        "lib/netstandard2.1/SpotifyAPI.Web.Auth.xml",
+        "spotifyapi.web.auth.7.2.1.nupkg.sha512",
+        "spotifyapi.web.auth.nuspec"
       ]
     },
     "System.Collections.Immutable/6.0.0": {
@@ -686,12 +801,29 @@
         "useSharedDesignerContext.txt",
         "version.txt"
       ]
+    },
+    "Unosquare.Swan.Lite/3.1.0": {
+      "sha512": "X3s5QE/KMj3WAPFqFve7St+Ds10BB50u8kW8PmKIn7FVkn7yEXe9Yxr2htt1WV85DRqfFR0MN/BUNHkGHtL4OQ==",
+      "type": "package",
+      "path": "unosquare.swan.lite/3.1.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net461/Swan.Lite.dll",
+        "lib/net461/Swan.Lite.xml",
+        "lib/netstandard2.0/Swan.Lite.dll",
+        "lib/netstandard2.0/Swan.Lite.xml",
+        "unosquare.swan.lite.3.1.0.nupkg.sha512",
+        "unosquare.swan.lite.nuspec"
+      ]
     }
   },
   "projectFileDependencyGroups": {
     "net9.0": [
+      "Caerostris.Services.Spotify.Web.SpotifyAPI.Web >= 1.0.0",
       "Discord.Net >= 3.16.0",
-      "SpotifyAPI.Web >= 7.2.1"
+      "SpotifyAPI.Web >= 7.2.1",
+      "SpotifyAPI.Web.Auth >= 7.2.1"
     ]
   },
   "packageFolders": {
@@ -737,11 +869,19 @@
       "net9.0": {
         "targetAlias": "net9.0",
         "dependencies": {
+          "Caerostris.Services.Spotify.Web.SpotifyAPI.Web": {
+            "target": "Package",
+            "version": "[1.0.0, )"
+          },
           "Discord.Net": {
             "target": "Package",
             "version": "[3.16.0, )"
           },
           "SpotifyAPI.Web": {
+            "target": "Package",
+            "version": "[7.2.1, )"
+          },
+          "SpotifyAPI.Web.Auth": {
             "target": "Package",
             "version": "[7.2.1, )"
           }

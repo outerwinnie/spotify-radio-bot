@@ -9,8 +9,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Caerostris.Services.Spotify.Web.SpotifyAPI.Web" Version="1.0.0" />
       <PackageReference Include="Discord.Net" Version="3.16.0" />
       <PackageReference Include="SpotifyAPI.Web" Version="7.2.1" />
+      <PackageReference Include="SpotifyAPI.Web.Auth" Version="7.2.1" />
     </ItemGroup>
 
 </Project>
