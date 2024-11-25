@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Winnie\\RiderProjects\\spotify-radio-bot\\spotify-radio-bot\\spotify-radio-bot.csproj": {}
+    "C:\\Users\\Winnie\\RiderProjects\\spotify-radio-bot\\spotify-radio-bot.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Winnie\\RiderProjects\\spotify-radio-bot\\spotify-radio-bot\\spotify-radio-bot.csproj": {
+    "C:\\Users\\Winnie\\RiderProjects\\spotify-radio-bot\\spotify-radio-bot.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Winnie\\RiderProjects\\spotify-radio-bot\\spotify-radio-bot\\spotify-radio-bot.csproj",
+        "projectUniqueName": "C:\\Users\\Winnie\\RiderProjects\\spotify-radio-bot\\spotify-radio-bot.csproj",
         "projectName": "spotify-radio-bot",
-        "projectPath": "C:\\Users\\Winnie\\RiderProjects\\spotify-radio-bot\\spotify-radio-bot\\spotify-radio-bot.csproj",
+        "projectPath": "C:\\Users\\Winnie\\RiderProjects\\spotify-radio-bot\\spotify-radio-bot.csproj",
         "packagesPath": "C:\\Users\\Winnie\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Winnie\\RiderProjects\\spotify-radio-bot\\spotify-radio-bot\\obj\\",
+        "outputPath": "C:\\Users\\Winnie\\RiderProjects\\spotify-radio-bot\\obj\\",
         "projectStyle": "PackageReference",
         "UsingMicrosoftNETSdk": false,
         "configFilePaths": [
