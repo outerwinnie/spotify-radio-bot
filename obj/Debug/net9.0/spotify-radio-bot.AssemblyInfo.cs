@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("spotify-radio-bot")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ebb2f218827d2c45bb98c1f3534664286132e06b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5f13378c277b3bcd4d42cdb650de7ed413619c47")]
 [assembly: System.Reflection.AssemblyProductAttribute("spotify-radio-bot")]
 [assembly: System.Reflection.AssemblyTitleAttribute("spotify-radio-bot")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

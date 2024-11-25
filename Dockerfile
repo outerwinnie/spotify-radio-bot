@@ -23,5 +23,13 @@ WORKDIR /app
 # Copy the built application from the previous stage
 COPY --from=build /out ./
 
+ENV DISCORD_BOT_TOKEN=""
+ENV SPOTIFY_CLIENT_ID=""
+ENV SPOTIFY_CLIENT_SECRET=""
+ENV SPOTIFY_PLAYLIST_ID=""
+ENV DISCORD_CHANNEL_ID=""
+ENV SPOTIFY_PLAYLIST_CAP="25"
+
+
 # Run the application
 ENTRYPOINT ["dotnet", "spotify-radio-bot.dll"]
