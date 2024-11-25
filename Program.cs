@@ -22,8 +22,13 @@ class Program
 
     public Program()
     {
-        _client = new DiscordSocketClient();
+        var config = new DiscordSocketConfig
+        {
+            GatewayIntents = GatewayIntents.AllUnprivileged | GatewayIntents.MessageContent
+        };
+        _client = new DiscordSocketClient(config);
     }
+
 
     public async Task MainAsync()
     {
