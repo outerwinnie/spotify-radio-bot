@@ -115,7 +115,7 @@ class Program
     static async Task<string> GetAuthorizationCodeAsync()
     {
         var listener = new HttpListener();
-        listener.Prefixes.Add("http://192.168.1.131:5022/"); // The port should match the redirect URI in the dashboard
+        listener.Prefixes.Add("http://locahost:5022/"); // The port should match the redirect URI in the dashboard
         listener.Start();
         Console.WriteLine("Listening for callback...");
 
