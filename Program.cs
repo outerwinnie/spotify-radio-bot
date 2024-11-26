@@ -1,4 +1,4 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 using System.Net;
 using Discord;
 using Discord.WebSocket;
@@ -7,13 +7,13 @@ using SpotifyAPI.Web;
 class Program
 {
     private readonly DiscordSocketClient _client;
-    private readonly string _discordToken = Environment.GetEnvironmentVariable("DISCORD_BOT_TOKEN") ?? throw new InvalidOperationException();
-    private readonly string _spotifyClientId = Environment.GetEnvironmentVariable("SPOTIFY_CLIENT_ID") ?? throw new InvalidOperationException();
-    private readonly string _spotifyClientSecret = Environment.GetEnvironmentVariable("SPOTIFY_CLIENT_SECRET") ?? throw new InvalidOperationException();
-    private readonly string _spotifyPlaylistId = Environment.GetEnvironmentVariable("SPOTIFY_PLAYLIST_ID") ?? throw new InvalidOperationException();
-    private readonly string _redirectUri = Environment.GetEnvironmentVariable("REDIRECT_URI") ?? throw new InvalidOperationException();
-    private readonly ulong _channelId = ulong.Parse(Environment.GetEnvironmentVariable("DISCORD_CHANNEL_ID") ?? "0");
-    private readonly int _playlistCap = int.Parse(Environment.GetEnvironmentVariable("SPOTIFY_PLAYLIST_CAP") ?? "50");
+    private readonly string _discordToken = Environment.GetEnvironmentVariable("DISCORD_TOKEN");
+    private readonly string _spotifyClientId = Environment.GetEnvironmentVariable("SPOTIFY_CLIENT_ID");
+    private readonly string _spotifyClientSecret = Environment.GetEnvironmentVariable("SPOTIFY_CLIENT_SECRET");
+    private readonly string _spotifyPlaylistId = Environment.GetEnvironmentVariable("SPOTIFY_PLAYLIST_ID");
+    private readonly string _redirectUri = Environment.GetEnvironmentVariable("REDIRECT_URI");
+    private readonly ulong _channelId = Convert.ToUInt64(Environment.GetEnvironmentVariable("DISCORD_CHANNEL_ID"));
+    private readonly int _playlistCap = Convert.ToInt32(Environment.GetEnvironmentVariable("SPOTIFY_PLAYLIST_CAP"));
 
     private SpotifyClient _spotifyClient;
 
@@ -63,6 +63,7 @@ class Program
             // Add to Spotify playlist
             if (!string.IsNullOrEmpty(trackId))
             {
+                Console.WriteLine($"Track ID: {trackId}");
                 await AddTrackToSpotifyPlaylistAsync(trackId);
             }
         }
@@ -70,14 +71,16 @@ class Program
 
     private string DetectSpotifyTrackLink(string message)
     {
-        string pattern = @"https?:\/\/open\.spotify\.com\/track\/[a-zA-Z0-9]+";
+        // Updated regex to handle both regional and standard Spotify links
+        string pattern = @"https:\/\/open\.spotify\.com\/(?:intl-[a-z]{2}\/)?track\/[a-zA-Z0-9]+";
         Match match = Regex.Match(message, pattern);
         return match.Success ? match.Value : null;
     }
 
     private string ExtractTrackId(string spotifyLink)
     {
-        string pattern = @"https?:\/\/open\.spotify\.com\/track\/([a-zA-Z0-9]+)";
+        // Updated regex to capture track ID from both formats
+        string pattern = @"https:\/\/open\.spotify\.com\/(?:intl-[a-z]{2}\/)?track\/([a-zA-Z0-9]+)";
         Match match = Regex.Match(spotifyLink, pattern);
         return match.Success ? match.Groups[1].Value : null;
     }
@@ -108,14 +111,14 @@ class Program
             .CreateDefault()
             .WithToken(accessToken);  // Use WithToken to directly pass the access token
 
-        var spotify = new SpotifyClient(spotifyConfig);
+        _spotifyClient = new SpotifyClient(spotifyConfig);
     }
     
     // Helper method to listen for the callback and capture the authorization code
     static async Task<string> GetAuthorizationCodeAsync()
     {
         var listener = new HttpListener();
-        listener.Prefixes.Add("http://locahost:5000/"); // The port should match the redirect URI in the dashboard
+        listener.Prefixes.Add("http://localhost:5000/"); // The port should match the redirect URI in the dashboard
         listener.Start();
         Console.WriteLine("Listening for callback...");
 
@@ -136,50 +139,64 @@ class Program
     }
 
     private async Task AddTrackToSpotifyPlaylistAsync(string trackId)
+{
+    try
     {
-        try
+        // Ensure _spotifyClient is initialized
+        if (_spotifyClient == null)
         {
-            // Get existing tracks in the playlist
-            var playlist = await _spotifyClient.Playlists.Get(_spotifyPlaylistId);
-            var currentTracks = playlist.Tracks.Items;
-            var currentTrackUris = new List<string>();
+            Console.WriteLine("Spotify client is not initialized.");
+            return;
+        }
 
-            foreach (var item in currentTracks)
-            {
-                if (item.Track is FullTrack track)
-                    currentTrackUris.Add(track.Uri);
-            }
+        // Get existing tracks in the playlist
+        var playlist = await _spotifyClient.Playlists.Get(_spotifyPlaylistId);
 
-            // Check if track is already in the playlist
-            string newTrackUri = $"spotify:track:{trackId}";
-            if (currentTrackUris.Contains(newTrackUri))
-            {
-                Console.WriteLine("Track is already in the playlist.");
-                return;
-            }
+        if (playlist == null || playlist.Tracks == null || playlist.Tracks.Items == null)
+        {
+            Console.WriteLine("Error: Unable to retrieve playlist tracks.");
+            return;
+        }
 
-            // Check if we need to remove the oldest track
-            if (currentTrackUris.Count >= _playlistCap)
+        var currentTracks = playlist.Tracks.Items;
+        var currentTrackUris = new List<string>();
+
+        foreach (var item in currentTracks)
+        {
+            if (item.Track is FullTrack track)
+                currentTrackUris.Add(track.Uri);
+        }
+
+        // Check if track is already in the playlist
+        string newTrackUri = $"spotify:track:{trackId}";
+        if (currentTrackUris.Contains(newTrackUri))
+        {
+            Console.WriteLine("Track is already in the playlist.");
+            return;
+        }
+
+        // Check if we need to remove the oldest track
+        if (currentTrackUris.Count >= _playlistCap)
+        {
+            Console.WriteLine("Playlist cap reached. Removing oldest track.");
+            await _spotifyClient.Playlists.RemoveItems(_spotifyPlaylistId, new PlaylistRemoveItemsRequest
             {
-                Console.WriteLine("Playlist cap reached. Removing oldest track.");
-                await _spotifyClient.Playlists.RemoveItems(_spotifyPlaylistId, new PlaylistRemoveItemsRequest
+                Tracks = new List<PlaylistRemoveItemsRequest.Item>
                 {
-                    Tracks = new List<PlaylistRemoveItemsRequest.Item>
-                    {
-                        new PlaylistRemoveItemsRequest.Item { Uri = currentTrackUris[0] }
-                    }
-                });
+                    new PlaylistRemoveItemsRequest.Item { Uri = currentTrackUris[0] }
+                }
+            });
 
-                currentTrackUris.RemoveAt(0);
-            }
+            currentTrackUris.RemoveAt(0);
+        }
 
-            // Add the new track
-            await _spotifyClient.Playlists.AddItems(_spotifyPlaylistId, new PlaylistAddItemsRequest(new List<string> { newTrackUri }));
-            Console.WriteLine("Track added to Spotify playlist.");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error adding track to Spotify playlist: {ex.Message}");
-        }
+        // Add the new track
+        await _spotifyClient.Playlists.AddItems(_spotifyPlaylistId, new PlaylistAddItemsRequest(new List<string> { newTrackUri }));
+        Console.WriteLine("Track added to Spotify playlist.");
     }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error adding track to Spotify playlist: {ex.Message}");
+    }
+}
 }
