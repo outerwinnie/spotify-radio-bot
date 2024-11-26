@@ -11,7 +11,7 @@ class Program
     private readonly string _spotifyClientId = Environment.GetEnvironmentVariable("SPOTIFY_CLIENT_ID") ?? throw new InvalidOperationException();
     private readonly string _spotifyClientSecret = Environment.GetEnvironmentVariable("SPOTIFY_CLIENT_SECRET") ?? throw new InvalidOperationException();
     private readonly string _spotifyPlaylistId = Environment.GetEnvironmentVariable("SPOTIFY_PLAYLIST_ID") ?? throw new InvalidOperationException();
-    private readonly string _redirectUri = Environment.GetEnvironmentVariable("REDIRECT_URI") ?? throw new InvalidOperationException();
+    private static readonly string _redirectUri = Environment.GetEnvironmentVariable("REDIRECT_URI") ?? throw new InvalidOperationException();
     private readonly ulong _channelId = ulong.Parse(Environment.GetEnvironmentVariable("DISCORD_CHANNEL_ID") ?? "0");
     private readonly int _playlistCap = int.Parse(Environment.GetEnvironmentVariable("SPOTIFY_PLAYLIST_CAP") ?? "50");
 
@@ -115,7 +115,7 @@ class Program
     static async Task<string> GetAuthorizationCodeAsync()
     {
         var listener = new HttpListener();
-        listener.Prefixes.Add("http://localhost:5000/"); // The port should match the redirect URI in the dashboard
+        listener.Prefixes.Add($"{_redirectUri}"); // The port should match the redirect URI in the dashboard
         listener.Start();
         Console.WriteLine("Listening for callback...");
 
