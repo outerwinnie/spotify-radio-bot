@@ -29,9 +29,9 @@ ENV SPOTIFY_CLIENT_SECRET=""
 ENV SPOTIFY_PLAYLIST_ID=""
 ENV DISCORD_CHANNEL_ID=""
 ENV SPOTIFY_PLAYLIST_CAP="25"
-ENV REDIRECT_URI="http://localhost:5000/callback"
+ENV REDIRECT_URI="http://localhost:5028/callback"
 
-EXPOSE 5000
+EXPOSE 5028
 
 # Run the application
 ENTRYPOINT ["dotnet", "spotify-radio-bot.dll"]
