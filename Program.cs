@@ -1,12 +1,9 @@
 using System.Text.RegularExpressions;
-using System.Net;
 using Discord;
 using Discord.WebSocket;
 using SpotifyAPI.Web;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Hosting;
-
 class Program
 {
     private readonly DiscordSocketClient _client;
@@ -117,7 +114,6 @@ class Program
         _spotifyClient = new SpotifyClient(spotifyConfig);
     }
     
-    // Helper method to listen for the callback and capture the authorization code
     private async Task<string> GetAuthorizationCodeAsync()
     {
         string code = null;
@@ -128,27 +124,47 @@ class Program
         // Define the route to handle the Spotify callback
         app.MapGet("/", (HttpContext context) =>
         {
-            code = context.Request.Query["code"]; // Capture the authorization code from the query string
+            // Capture the authorization code
+            code = context.Request.Query["code"];
+        
+            if (!string.IsNullOrEmpty(code))
+            {
+                Console.WriteLine($"Authorization code received: {code}");
+            }
+            else
+            {
+                Console.WriteLine("Authorization code not found in the request.");
+            }
+
             context.Response.ContentType = "text/html";
             return context.Response.WriteAsync("<html><body><h1>Authorization complete. You can close this window.</h1></body></html>");
         });
 
-        // Start the application and listen on all interfaces (0.0.0.0) at port 5028
-        var appTask = app.RunAsync("http://0.0.0.0:5028");
+        // Start the server on port 5028
+        var serverUrl = "http://0.0.0.0:5028";
+        var appTask = app.RunAsync(serverUrl);
 
-        Console.WriteLine("Listening for Spotify callback on http://0.0.0.0:5028...");
+        Console.WriteLine($"Listening for Spotify callback on {serverUrl}...");
 
-        // Wait until the authorization code is received
+        // Wait for the code to be received
+        var timeout = Task.Delay(TimeSpan.FromMinutes(5)); // Optional timeout for waiting
         while (code == null)
         {
-            await Task.Delay(500);
+            if (timeout.IsCompleted)
+            {
+                Console.WriteLine("Timeout waiting for authorization code.");
+                await app.StopAsync();
+                throw new TimeoutException("Spotify authorization timed out.");
+            }
+
+            await Task.Delay(500); // Poll every 500ms
         }
 
-        // Stop the server
+        // Stop the server once the code is received
         await app.StopAsync();
-
         return code;
     }
+
 
     private async Task AddTrackToSpotifyPlaylistAsync(string trackId)
 {
