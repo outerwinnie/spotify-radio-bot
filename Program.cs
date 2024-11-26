@@ -7,7 +7,7 @@ using SpotifyAPI.Web;
 class Program
 {
     private readonly DiscordSocketClient _client;
-    private readonly string _discordToken = Environment.GetEnvironmentVariable("DISCORD_TOKEN");
+    private readonly string _discordToken = Environment.GetEnvironmentVariable("DISCORD_BOT_TOKEN");
     private readonly string _spotifyClientId = Environment.GetEnvironmentVariable("SPOTIFY_CLIENT_ID");
     private readonly string _spotifyClientSecret = Environment.GetEnvironmentVariable("SPOTIFY_CLIENT_SECRET");
     private readonly string _spotifyPlaylistId = Environment.GetEnvironmentVariable("SPOTIFY_PLAYLIST_ID");
