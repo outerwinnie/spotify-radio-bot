@@ -133,10 +133,10 @@ class Program
             return context.Response.WriteAsync("<html><body><h1>Authorization complete. You can close this window.</h1></body></html>");
         });
 
-        // Start the application and listen on all interfaces (0.0.0.0) at port 5000
-        var appTask = app.RunAsync("http://0.0.0.0:5000");
+        // Start the application and listen on all interfaces (0.0.0.0) at port 5028
+        var appTask = app.RunAsync("http://0.0.0.0:5028");
 
-        Console.WriteLine("Listening for Spotify callback on http://0.0.0.0:5000...");
+        Console.WriteLine("Listening for Spotify callback on http://0.0.0.0:5028...");
 
         // Wait until the authorization code is received
         while (code == null)
