@@ -122,7 +122,7 @@ class Program
         var app = builder.Build();
 
         // Define the route to handle the Spotify callback
-        app.MapGet("/", (HttpContext context) =>
+        app.MapGet("/callback", (HttpContext context) =>
         {
             // Capture the authorization code
             code = context.Request.Query["code"];
