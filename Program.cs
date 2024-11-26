@@ -3,6 +3,9 @@ using System.Net;
 using Discord;
 using Discord.WebSocket;
 using SpotifyAPI.Web;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Hosting;
 
 class Program
 {
@@ -115,26 +118,35 @@ class Program
     }
     
     // Helper method to listen for the callback and capture the authorization code
-    static async Task<string> GetAuthorizationCodeAsync()
+    private async Task<string> GetAuthorizationCodeAsync()
     {
-        var listener = new HttpListener();
-        listener.Prefixes.Add("http://0.0.0.0:5028/"); // The port should match the redirect URI in the dashboard
-        listener.Start();
-        Console.WriteLine("Listening for callback...");
+        string code = null;
 
-        var context = await listener.GetContextAsync(); // Wait for the callback from Spotify
-        var response = context.Response;
-        var query = context.Request.QueryString;
-        var code = query["code"];
+        var builder = WebApplication.CreateBuilder();
+        var app = builder.Build();
 
-        // Send a simple response to the browser
-        string responseString = "<html><body><h1>Authorization complete. You can close this window.</h1></body></html>";
-        byte[] buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
-        response.ContentLength64 = buffer.Length;
-        await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
-        response.Close();
+        // Define the route to handle the Spotify callback
+        app.MapGet("/", (HttpContext context) =>
+        {
+            code = context.Request.Query["code"]; // Capture the authorization code from the query string
+            context.Response.ContentType = "text/html";
+            return context.Response.WriteAsync("<html><body><h1>Authorization complete. You can close this window.</h1></body></html>");
+        });
 
-        listener.Stop(); // Stop the listener after receiving the authorization code
+        // Start the application and listen on all interfaces (0.0.0.0) at port 5000
+        var appTask = app.RunAsync("http://0.0.0.0:5000");
+
+        Console.WriteLine("Listening for Spotify callback on http://0.0.0.0:5000...");
+
+        // Wait until the authorization code is received
+        while (code == null)
+        {
+            await Task.Delay(500);
+        }
+
+        // Stop the server
+        await app.StopAsync();
+
         return code;
     }
 
