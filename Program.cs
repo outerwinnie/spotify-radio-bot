@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using System.Net;
 using Discord;
 using Discord.WebSocket;
 using SpotifyAPI.Web;
@@ -10,6 +11,7 @@ class Program
     private readonly string _spotifyClientId = Environment.GetEnvironmentVariable("SPOTIFY_CLIENT_ID") ?? throw new InvalidOperationException();
     private readonly string _spotifyClientSecret = Environment.GetEnvironmentVariable("SPOTIFY_CLIENT_SECRET") ?? throw new InvalidOperationException();
     private readonly string _spotifyPlaylistId = Environment.GetEnvironmentVariable("SPOTIFY_PLAYLIST_ID") ?? throw new InvalidOperationException();
+    private readonly string _redirectUri = Environment.GetEnvironmentVariable("REDIRECT_URI") ?? throw new InvalidOperationException();
     private readonly ulong _channelId = ulong.Parse(Environment.GetEnvironmentVariable("DISCORD_CHANNEL_ID") ?? "0");
     private readonly int _playlistCap = int.Parse(Environment.GetEnvironmentVariable("SPOTIFY_PLAYLIST_CAP") ?? "50");
 
@@ -82,12 +84,55 @@ class Program
 
     private async Task InitializeSpotifyClientAsync()
     {
-        var config = SpotifyClientConfig.CreateDefault();
-        var request = new ClientCredentialsRequest(_spotifyClientId, _spotifyClientSecret);
-        var response = await new OAuthClient(config).RequestToken(request);
+        // Step 1: Generate the authorization URL for user authentication
+        var loginRequest = new LoginRequest(new Uri(_redirectUri), _spotifyClientId, LoginRequest.ResponseType.Code)
+        {
+            Scope = new[] { "playlist-modify-public", "playlist-modify-private" }
+        };
 
-        _spotifyClient = new SpotifyClient(config.WithToken(response.AccessToken));
-        Console.WriteLine("Spotify client initialized.");
+        var uri = loginRequest.ToUri();
+        Console.WriteLine("Go to this URL and authorize the application:");
+        Console.WriteLine(uri);
+
+        // Step 2: Start the local server to listen for the callback
+        var authorizationCode = await GetAuthorizationCodeAsync();
+
+        // Step 3: Exchange the authorization code for an access token
+        var tokenRequest = new AuthorizationCodeTokenRequest(_spotifyClientId, _spotifyClientSecret, authorizationCode, new Uri(_redirectUri));
+        var tokenResponse = await new OAuthClient().RequestToken(tokenRequest);
+
+        var accessToken = tokenResponse.AccessToken;
+
+        // Step 4: Initialize the Spotify client with the obtained access token
+        var spotifyConfig = SpotifyClientConfig
+            .CreateDefault()
+            .WithToken(accessToken);  // Use WithToken to directly pass the access token
+
+        var spotify = new SpotifyClient(spotifyConfig);
+    }
+    
+    // Helper method to listen for the callback and capture the authorization code
+    static async Task<string> GetAuthorizationCodeAsync()
+    {
+        var listener = new HttpListener();
+        listener.Prefixes.Add("http://localhost:5000/"); // The port should match the redirect URI in the dashboard
+        listener.Start();
+        Console.WriteLine("Listening for callback...");
+
+        var context = await listener.GetContextAsync(); // Wait for the callback from Spotify
+        var response = context.Response;
+        var query = context.Request.QueryString;
+        var code = query["code"];
+
+        // Send a simple response to the browser
+        string responseString = "<html><body><h1>Authorization complete. You can close this window.</h1></body></html>";
+        byte[] buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
+        response.ContentLength64 = buffer.Length;
+        await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
+        response.Close();
+
+        listener.Stop(); // Stop the listener after receiving the authorization code
+        return code;
     }
 
     private async Task AddTrackToSpotifyPlaylistAsync(string trackId)

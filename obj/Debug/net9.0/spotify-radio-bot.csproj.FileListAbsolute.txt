@@ -28,3 +28,6 @@ C:\Users\Winnie\RiderProjects\spotify-radio-bot\obj\Debug\net9.0\refint\spotify-
 C:\Users\Winnie\RiderProjects\spotify-radio-bot\obj\Debug\net9.0\spotify-radio-bot.pdb
 C:\Users\Winnie\RiderProjects\spotify-radio-bot\obj\Debug\net9.0\spotify-radio-bot.genruntimeconfig.cache
 C:\Users\Winnie\RiderProjects\spotify-radio-bot\obj\Debug\net9.0\ref\spotify-radio-bot.dll
+C:\Users\Winnie\RiderProjects\spotify-radio-bot\bin\Debug\net9.0\EmbedIO.dll
+C:\Users\Winnie\RiderProjects\spotify-radio-bot\bin\Debug\net9.0\SpotifyAPI.Web.Auth.dll
+C:\Users\Winnie\RiderProjects\spotify-radio-bot\bin\Debug\net9.0\Swan.Lite.dll
