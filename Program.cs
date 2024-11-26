@@ -134,7 +134,7 @@ class Program
         });
 
         // Start the application and listen on all interfaces (192.168.1.132) at port 5028
-        var appTask = app.RunAsync("http://192.168.1.132:5028");
+        var appTask = app.RunAsync("http://localhost:5028");
 
         Console.WriteLine("Listening for Spotify callback on http://192.168.1.132:5028...");
 
